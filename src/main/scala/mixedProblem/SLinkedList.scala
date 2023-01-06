@@ -15,7 +15,7 @@ class SLinkedList[T] {
       print(temp.value + " -> ")
       temp = temp.next
     }
-    println("Nil")
+    println("null")
   }
 
   def list_length(node: Node[T]): Int = {
@@ -24,6 +24,16 @@ class SLinkedList[T] {
       else list_lengthHelper(node.next, acc + 1)
     }
     list_lengthHelper(node, acc = 0)
+  }
+
+  def insertAtBeginning(value: T): Unit = {
+    val newNode = Node(value)
+    if (head == null) head = newNode
+    else {
+      newNode.next = head
+      head = newNode
+    }
+    size += 1
   }
 
   def insertAtEnd(value: T): Unit = {
@@ -37,15 +47,7 @@ class SLinkedList[T] {
     size += 1
   }
 
-  def insertAtBeginning(value: T): Unit = {
-    val newNode = Node(value)
-    if (head == null) head = newNode
-    else {
-      newNode.next = head
-      head = newNode
-    }
-    size += 1
-  }
+  // 10 11 12 13 15
 
   def insertInBetween(value: T, node: Node[T]): Unit = {
     val newNode = Node(value)
@@ -61,7 +63,7 @@ class SLinkedList[T] {
   def insertAtParticularPosition(value: T, position: Int): Unit = {
     val newNode = Node(value)
     val pos = position
-    if (head == null) head = newNode
+    if (head == null && position == 1) head = newNode
     else {
       if (pos < 1 || pos > size) println("Invalid Position !")
       else if (pos == 1) insertAtBeginning(value)
@@ -123,17 +125,15 @@ class SLinkedList[T] {
 
   def removeAllOccurrences(value: T): Unit = {
     if (head == null) println("Empty List is found")
-    else if (head.value == value) {
-      head = head.next
-      size -= 1
-    }
     else {
-      var curr = head
+      var temp = head
       var prev: Node[T] = null
-      while (curr != null) {
-        if (curr.value == value) prev.next = curr.next
-        else prev = curr
-        curr = curr.next
+      while (temp != null) {
+        if (temp.value == value) {
+          prev.next = temp.next
+          size -= 1
+        } else prev = temp
+        temp = temp.next
       }
     }
   }
@@ -185,6 +185,20 @@ class SLinkedList[T] {
   }
 
   // 1 2 3 4 5
+  def detectLoop(node: Node[T]): Boolean = {
+    if (head == null || head.next == null) false
+    else {
+      var slow = head
+      var fast = head
+      while (fast != null && fast.next != null) {
+        slow = slow.next
+        fast = fast.next.next
+        if (slow == fast) return true
+      }
+      false
+    }
+  }
+  // 1 2 3 4 5
   def reverseLinkedList(node: Node[T]): Unit = {
     if (head == null || head.next == null) head
     else {
@@ -202,7 +216,8 @@ class SLinkedList[T] {
   }
 
   // using recursion
-  // 1 2 3 4 5
+  // 1 2 3 4
+  // reversed = reverseLinkedList(reversed= reverseLinkedList(reversed = reverseLinkedList(reversed= reverseLinkedList(4))
   def reverseLinkedList_2(node: Node[T]): Node[T] = {
     if (node == null || node.next == null) node
     else {
@@ -234,21 +249,6 @@ class SLinkedList[T] {
     reverseTailRecursive(null, node)
   }
 
-  // 1 2 3 4 5
-  def detectLoop(node: Node[T]): Boolean = {
-    if (head == null || head.next == null) false
-    else{
-      var slow = head
-      var fast = head
-      while (fast != null && fast.next != null) {
-        slow = slow.next
-        fast = fast.next.next
-        if (slow == fast) return true
-      }
-      false
-    }
-  }
-
 
 
   def removeLoop(node: Node[T]): Unit = {
@@ -264,15 +264,13 @@ class SLinkedList[T] {
               break
          }
        }
-
-
+      // 1 2 3 4 5
         if (slow == head) {
           while (slow.next != head) {
             slow = slow.next
           }
           slow.next = null
           }
-
         else if (slow == fast) {
           slow = head
           while (slow.next != fast.next) {
@@ -316,7 +314,6 @@ class SLinkedList[T] {
   def removeNthElementFromLast(node: Node[T], n: Int): Unit = {
     val l = list_length(node) - n
     if (l == 0) {
-      var temp = head.next
       head.next = null
       head = null
     }
@@ -340,25 +337,31 @@ class SLinkedList[T] {
 object List extends App{
   private val list_1 = new SLinkedList[Int]
   println(list_1.isEmpty)
+  list_1.insertAtBeginning(15)
+  list_1.insertAtBeginning(13)
+  list_1.insertAtBeginning(12)
+  list_1.insertAtBeginning(11)
   list_1.insertAtBeginning(10)
-  list_1.insertAtEnd(9)
-  list_1.insertAtParticularPosition(8,2)
-  list_1.insertAtEnd(5)
-  list_1.insertInBetween(6, list_1.head.next.next)
-  list_1.insertAtParticularPosition(7,3)
+  //list_1.insertInBetween(list_1.head.next.next,14)
   list_1.display()
-  list_1.insertAtEnd(5)
-  list_1.display()
-  list_1.remove(6)
-  list_1.display()
-  list_1.removeAllOccurrences(5)
-  list_1.display()
-  println(list_1.getNthFromFront(list_1.head, 2))
-  list_1.display()
-  list_1.removeNthElementFromLast(list_1.head,2)
-  list_1.display()
-  println()
-  println()
+//  list_1.insertAtEnd(9)
+//  list_1.insertAtParticularPosition(8,2)
+//  list_1.insertAtEnd(5)
+//  list_1.insertInBetween(6, list_1.head.next.next)
+//  list_1.insertAtParticularPosition(7,3)
+//  list_1.display()
+//  list_1.insertAtEnd(5)
+//  list_1.display()
+//  list_1.remove(6)
+//  list_1.display()
+//  list_1.removeAllOccurrences(5)
+//  list_1.display()
+//  println(list_1.getNthFromFront(list_1.head, 2))
+//  list_1.display()
+//  list_1.removeNthElementFromLast(list_1.head,2)
+//  list_1.display()
+//  println()
+//  println()
 
 
 
@@ -401,7 +404,8 @@ object List extends App{
   e1.next = e2
   e2.next = e3
   e3.next = e4
-  e4.next = e2
+  e4.next = e5
+
   //list3.display()
 
   println(list3.detectLoop(list3.head))
