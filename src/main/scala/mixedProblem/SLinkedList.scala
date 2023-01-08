@@ -334,7 +334,7 @@ class SLinkedList[T] {
 }
 
 
-object List extends App{
+object LinkedList extends App{
   private val list_1 = new SLinkedList[Int]
   println(list_1.isEmpty)
   list_1.insertAtBeginning(15)

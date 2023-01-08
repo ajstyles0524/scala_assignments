@@ -67,6 +67,11 @@ class QueueUsingArray (val capacity: Int) {
     if(isFull()) throw new Exception("Queue is full")
     else arr(rear)
   }
+
+
+  def printElements(): Unit = {
+    println(arr.mkString(" "))
+  }
 }
 
 
@@ -75,6 +80,8 @@ object Queue extends App{
   queue.enqueue(1)
   queue.enqueue(2)
   queue.enqueue(3)
+  queue.printElements()
+  println()
   println(queue.frontVal())
   println(queue.rearVal())
   println(queue.dequeue()) // prints 1

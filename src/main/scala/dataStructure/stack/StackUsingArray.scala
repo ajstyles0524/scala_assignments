@@ -1,6 +1,7 @@
 package dataStructure.stack
 
 import scala.annotation.tailrec
+import scala.collection.mutable
 
 // It is a linear data structure that follows a particular order in which the operations are performed.
 // To implement the stack, it is required to maintain the pointer to the top of the stack,
@@ -54,7 +55,7 @@ class StackUsingArray {
     }
   }
 
-  private def printStack(): Unit ={
+  private def printStack(): Unit = {
     @tailrec
     def printStackRec(stack:Array[Int], top:Int):Unit ={
       if(top < 0) println()
