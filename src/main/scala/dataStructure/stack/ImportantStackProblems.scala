@@ -3,13 +3,14 @@ package dataStructure.stack
 import scala.annotation.tailrec
 import scala.collection.mutable
 import scala.collection.mutable.Stack
+import scala.util.control.Breaks.{break, breakable}
 object ImportantStackProblems {
 
   // string = ([{}])
   private def isBalanced(string: String): Boolean = {
-    val stack = scala.collection.mutable.Stack[Char]()
+    val stack = Stack[Char]()
     @tailrec
-    def check(remaining: List[Char], stack: mutable.Stack[Char]): Boolean = {
+    def check(remaining: List[Char], stack: Stack[Char]): Boolean = {
       if (remaining.isEmpty) stack.isEmpty
       else {
         val char = remaining.head
@@ -49,6 +50,13 @@ object ImportantStackProblems {
 
   private def reverseWordWise(string: String): String ={
     string.split(" ").map(reverse).mkString(" ")
+  }
+
+  private def deleteMiddle(stack: mutable.Stack[Int], curr: Int, n: Int): Unit = {
+    if (stack.isEmpty || curr == n) return
+    val x = stack.pop()
+    deleteMiddle(stack, curr + 1, n)
+    if (curr != n/2) stack.push(x)
   }
 
 
@@ -109,7 +117,7 @@ object ImportantStackProblems {
   // 3.After the infix expression has been completely processed, check the stack.
   // If there are any operators remaining on the stack, pop them and append them to the postfix expression.
   private def infixToPostfix(expression: String): String = {
-    val stack = new mutable.Stack[Char]
+    val stack = new Stack[Char]
     val result = new StringBuilder
     def processOperator(op: Char): Unit = {
       while (stack.nonEmpty && precedence(op) <= precedence(stack.top)) {
@@ -342,21 +350,194 @@ object ImportantStackProblems {
   }
 
 
+
+  // Next Greater Elements
+  // input = [ 4 , 5 , 2 , 25 ]
+  // output = [5, 25, 25, -1]
+
+  private def nextGreater(arr: Array[Int]): Array[Int] = {
+    val stack = scala.collection.mutable.Stack[Int]()
+    val nge = Array.fill(arr.length)(-1)
+    for (i <- arr.indices) {
+      while (stack.nonEmpty && arr(i) > arr(stack.top)) {
+        nge(stack.pop()) = arr(i)
+      }
+      stack.push(i)
+    }
+    nge
+  }
+  // in functional way
+  private def nextGreaterElement(arr: Array[Int]): Array[Int] = {
+    val stack = Stack[Int]()
+    val nge = Array.fill(arr.length)(-1)
+    @tailrec
+    def findNGE(i: Int): Unit = {
+      if (i < arr.length) {
+        if (stack.nonEmpty && arr(stack.top) < arr(i)) {
+          nge(stack.pop()) = arr(i)
+          findNGE(i)
+        } else {
+          stack.push(i)
+          findNGE(i + 1)
+        }
+      }
+    }
+    findNGE(0)
+    nge
+  }
+
+
+  private def NGECircular(arr: Array[Int]): Array[Int] ={
+    val stack = new Stack[Int]()
+    val nge = Array.fill(arr.length)(-1)
+    val n = arr.length
+    @tailrec
+    def findNGE(i: Int): Unit ={
+      if(i < 2*n){
+        if(stack.nonEmpty && arr(i % n) > arr(stack.top)){
+          nge(stack.top) = arr(i % n)
+          stack.pop()
+          findNGE(i)
+        }
+        else{
+          stack.push(i%n)
+          findNGE(i+1)
+        }
+      }
+    }
+    findNGE(0)
+    nge
+  }
+
+
+  private def nextSmallestElement(arr: Array[Int]): Array[Int] = {
+    val stack = Stack[Int]()
+    val nse = Array.fill(arr.length)(-1)
+
+    @tailrec
+    def findNSE(i: Int): Unit = {
+      if (i < arr.length) {
+        if (stack.nonEmpty && arr(stack.top) > arr(i)) {
+          nse(stack.pop()) = arr(i)
+          findNSE(i)
+        } else {
+          stack.push(i)
+          findNSE(i + 1)
+        }
+      }
+    }
+    findNSE(0)
+    nse
+  }
+
+
+  // 4 5 2 25
+  private def countOFNGE(arr: Array[Int],index: Int): Int = {
+    var count = 0
+    @tailrec
+    def findNGE(i: Int,ele:Int): Unit = {
+      if (i < arr.length) {
+        if (ele < arr(i)) {
+          count += 1
+          findNGE(i+1,ele)
+        }
+        else findNGE(i + 1, ele)
+      }
+    }
+    findNGE(index+1,arr(index))
+    count
+  }
+
+
+  // arr = {3,0,0,2,0,4}
+  // breaking into smaller parts
+  //
+  // for i = 0, left = 3, right = 4, ans = 0
+  // for i = 1, left = 3, right = 4, ans = 3
+  // for i = 2, left = 3, right = 4, ans = 6
+  // for i = 3, left = 3, right = 4, ans = 7
+  // for i = 4, left = 3, right = 4, ans = 10
+  // for i = 5, left = 4, right = 4, ans = 10
+
+  //    (brute force)
+  //    var ans = 0
+  //    val length = arr.length
+  //    for (i <- 0 until length) {
+  //      var left = 0
+  //      var right = 0
+  //      for (j <- i to 0 by -1) {
+  //        left = Math.max(arr(j), left)
+  //      }
+  //      for (k <- i until length) {
+  //        right = Math.max(right, arr(k))
+  //      }
+  //      ans = ans + Math.abs(Math.min(left, right) - arr(i))
+  //    }
+  //    ans
+
+
+
+
+  def trappingWater(height: Array[Int]): Int ={
+    if (height.length == 0) return 0
+
+    var left: Int = 0
+    var right: Int = height.length - 1
+    var maxLeft: Int = 0
+    var maxRight: Int = 0
+    var totalWater: Int = 0
+    while (left < right) {
+      if (height(left) < height(right)) {
+        if (height(left) >= maxLeft) {
+          maxLeft = height(left)
+        }
+        else {
+          totalWater += maxLeft - height(left)
+        }
+        left += 1
+      }
+      else {
+        if (height(right) >= maxRight) {
+          maxRight = height(right)
+        }
+        else {
+          totalWater += maxRight - height(right)
+        }
+        right -= 1
+      }
+    }
+    totalWater
+  }
+
+
   def main(args:Array[String]):Unit ={
     println(isBalanced("([{)])"))
     println(reverse("Anand Jaiswal"))
     println(reverseWordWise("Anand Jaiswal"))
     println(evalPostfixExp("100 200 + 2 / 5 * 7 +"))
 
-    val newStack = mutable.Stack(1,2,3,4,5)
+    val newStack = Stack(1,2,3,4,5)
     println(newStack)
     val reversedStack = reverseStack(newStack)
     println(reversedStack)
+
+    val stack = mutable.Stack(1, 2, 3, 4, 5)
+    val n = stack.size
+    println(deleteMiddle(stack,0,n))
     println(infixToPostfix("a+b*(c^d-e)^(f+g*h)-i"))
     println(infixToPrefix("x+y*z/w+u"))
     println(prefixToPostfix("*-A/BC-/AKL"))
     println(prefixToInfix("*-A/BC-/AKL"))
     println(postfixToInfix("ab*c+"))
     println(postfixToPrefix("ABC/-AK/L-*"))
+    val arr = Array(4,5,2,25)
+    println(arr.indices.reverse.toList)
+    println(nextGreater(arr).mkString(" "))
+    println(nextGreaterElement(arr).mkString(" "))
+    val array = Array(5,4,3,2,1)
+    println(NGECircular(array).mkString(" "))
+    val a = Array(5, 6, 2, 3, 1,7)
+    println(nextSmallestElement(a).mkString(" "))
+    println(countOFNGE(arr,0))
   }
 }

@@ -75,7 +75,7 @@ class QueueUsingArray (val capacity: Int) {
 }
 
 
-object Queue extends App{
+object queue extends App{
   val queue = new QueueUsingArray(5)
   queue.enqueue(1)
   queue.enqueue(2)
