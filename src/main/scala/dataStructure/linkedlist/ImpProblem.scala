@@ -180,7 +180,6 @@ class SLinkedList[T] {
       head = temp.next
       temp = head
     }
-
     while(temp != null && temp.next != null){
       if(temp.next.value == value) temp.next = temp.next.next
       else temp = temp.next
@@ -207,7 +206,6 @@ class SLinkedList[T] {
       if (index == 0) println(node.value)
       else midEleRec(node.next, index - 1)
     }
-
     if (node == null || node.next == null) println("Empty list or only one element is found")
     else {
       val midIdx = list_length(node) / 2
@@ -221,14 +219,12 @@ class SLinkedList[T] {
       if (fast == null || fast.next == null) println(slow.value)
       else midEleRec(node, slow.next, fast.next.next)
     }
-
     if (node == null || node.next == null) println("Empty list or only one element is found")
     else midEleRec(node, head, head)
   }
 
   def deleteMid(node: Node[T]): Unit = {
     var prev: Node[T] = null
-
     @tailrec
     def delMidRec(node: Node[T], slow: Node[T], fast: Node[T]): Unit = {
       if (fast == null || fast.next == null) prev.next = slow.next
@@ -237,7 +233,6 @@ class SLinkedList[T] {
         delMidRec(node, slow.next, fast.next.next)
       }
     }
-
     if (node == null || node.next == null) println("Empty list or only one element is found")
     else delMidRec(node, node, node)
   }
@@ -319,7 +314,7 @@ class SLinkedList[T] {
   // using recursion
   // 1 2 3 4 5
   // reversed = reverseLinkedList(reversed= reverseLinkedList(reversed = reverseLinkedList(reversed= reverseLinkedList(4))
-  def reverseLinkedList_2(node: Node[T]): Node[T] = {
+  def reverseLinkedList_2(node: Node[Int]): Node[Int] = {
     if (node == null || node.next == null) node
     else{
       val reversed = reverseLinkedList_2(node.next)
@@ -379,10 +374,250 @@ class SLinkedList[T] {
   }
 
 
+  def isPalindrome(head: Node[T]): Boolean = {
+    // Find the middle of the linked list
+    var slow: Node[T] = head
+    var fast: Node[T] = head
+    while (fast != null && fast.next != null) {
+      slow = slow.next
+      fast = fast.next.next
+    }
+    // Reverse the second half of the linked list
+    var prev: Node[T] = null
+    var curr: Node[T] = slow
+    var nxt: Node[T] = null
+    while (curr != null) {
+      nxt = curr.next
+      curr.next = prev
+      prev = curr
+      curr = nxt
+    }
+
+    // Compare the first half of the linked list to the reversed second half
+    var p1: Node[T] = head;
+    var p2: Node[T] = prev;
+    while (p2 != null) {
+      if (p1.value != p2.value) return false;
+      p1 = p1.next;
+      p2 = p2.next;
+    }
+     true;
+  }
+
+
+  def sortList(head: Node[Int]): Node[Int] = {
+    if ((head == null) || (head.next == null)) {
+      return head
+    }
+    var fast = head.next
+    var slow = head
+
+    while ((fast != null) && (fast.next != null)) {
+      fast = fast.next.next
+      slow = slow.next
+    }
+
+    val mid = slow.next
+    slow.next = null
+    val l = sortList(head)
+    val r = sortList(mid)
+    merge(l, r)
+  }
+
+  def merge(l: Node[Int], r: Node[Int]):Node[Int] = {
+    if (l == null) return r
+    if (r == null) return l
+    if (l.value > r.value) {
+      r.next = merge(l, r.next)
+      r
+    } else {
+      l.next = merge(l.next, r)
+      l
+    }
+  }
+
+
+  def sortZeroOneTwo(node: Node[Int]): Node[Int] ={
+    var curr = node
+    var z = 0
+    var o = 0
+    var t = 0
+    while (curr != null) {
+      if (curr.value == 0) z += 1
+      else if (curr.value == 1) o += 1
+      else t += 1
+      curr = curr.next
+    }
+    var start = node
+    while (start != null) {
+      if (z > 0) {
+        start.value = 0
+        z -= 1
+      }
+      else if (o > 0) {
+        start.value = 1
+        o -= 1
+      }
+      else {
+        start.value = 2
+        t -= 1
+      }
+      start = start.next
+    }
+    node
+  }
+
+
+
+
+
+
+  def oddEvenList(head: Node[T]): Node[T] = {
+    if (head == null) return head
+    var odd: Node[T] = head
+    var evn: Node[T] = head.next
+    var dum: Node[T] = head.next
+    while (evn != null && evn.next != null) {
+      odd.next = odd.next.next
+      evn.next = evn.next.next
+      odd = odd.next
+      evn = evn.next
+    }
+    odd.next = dum
+     head
+  }
+
+
+  def rearrangeEvenOdd(node: Node[Int]): Node[Int] = {
+    var even: Node[Int] = null
+    var odd: Node[Int] = null
+    var oddTail: Node[Int] = null
+    var evenTail: Node[Int] = null
+    var curr: Node[Int] = node
+    var temp: Node[Int] = node
+
+    while (curr != null) {
+      if (curr.value % 2 != 0) {
+        if (odd == null) {
+          odd = curr
+          oddTail = curr
+        }
+        else {
+          oddTail.next = curr
+          oddTail = oddTail.next
+        }
+      }
+      else {
+        if (even == null) {
+          even = curr
+          evenTail = curr
+        }
+        else {
+          evenTail.next = curr
+          evenTail = evenTail.next
+        }
+      }
+      curr = curr.next
+    }
+    // if the list contains at least one even node
+    if (even != null)
+    {
+      temp = even
+      evenTail.next = odd
+    }
+    else{
+      temp = odd
+    }
+    // null to terminate the list; otherwise, it will go into an infinite loop
+    if (oddTail != null) {
+      oddTail.next = null
+    }
+    temp
+  }
+
+
+
+
+
+  def addOneNumber(node: Node[Int],num: Int):Node[Int] = {
+    if (node == null) return Node(num)
+    val temp = reverseLinkedList_2(node)
+    var carry: Int = num
+    var curr = temp
+    while (carry > 0) {
+      val sum = curr.value + carry
+      curr.value = sum % 10
+      carry = sum / 10
+      breakable {
+        if (curr.next == null) break
+      }
+      curr = curr.next
+      if (carry > 0) {
+        curr.next = Node(carry);
+      }
+    }
+    reverseLinkedList_2(temp)
+  }
+
+
+  def addTwoNumbers(l1: Node[Int], l2: Node[Int]): Node[Int] = {
+    def addTwoNumbersHelper(l1: Node[Int], l2: Node[Int], carry: Int): Node[Int] = {
+      if (l1 == null && l2 == null && carry == 0) null
+      else if (l1 == null && l2 == null && carry != 0) Node[Int](carry)
+      else if (l1 == null) addTwoNumbersHelper(Node[Int](0), l2, carry)
+      else if (l2 == null) addTwoNumbersHelper(l1, Node[Int](0), carry)
+      else Node[Int]((l1.value + l2.value + carry) % 10, addTwoNumbersHelper(l1.next, l2.next, (l1.value + l2.value + carry) / 10))
+    }
+    addTwoNumbersHelper(l1, l2, 0)
+  }
+
+  def reverseListNode(_node: Node[Int], _k: Int): Node[Int] = {
+    var reversed: Node[Int] = null
+    var node: Node[Int] = _node
+    var k: Int = _k
+    while (k > 0) {
+      val tmp = node.next
+      node.next = reversed
+      reversed = node
+      node = tmp
+      k = k - 1
+    }
+    reversed
+  }
+
+  def reverseKGroup(head: Node[Int], k: Int): Node[Int] = {
+    var oldHead: Node[Int] = head
+    var newHead: Node[Int] = null
+
+    var kthTail: Node[Int] = null
+    var node: Node[Int] = oldHead
+
+    while (node != null) {
+      var count = 0
+      while (count < k && node != null) {
+        node = node.next
+        count = count + 1
+      }
+      if (count == k) {
+        val reversedNode = reverseListNode(oldHead, k)
+        if (newHead == null) newHead = reversedNode
+        if (kthTail != null) kthTail.next = reversedNode
+        kthTail = oldHead
+        oldHead = node
+      }
+    }
+    if (kthTail != null) kthTail.next = oldHead
+    if (newHead != null) newHead else head
+  }
+
+
+
+
+ // calculate length of loop
   def countNode(node:Node[T]): Int ={
     val temp = node
     @tailrec
-    def countRec(node:Node[T], acc:Int=0):Int={
+    def countRec(node:Node[T], acc:Int=0):Int ={
       if(node.next == temp) acc
       else countRec(node.next, acc+1)
     }
@@ -463,7 +698,7 @@ object List extends App {
   //list2.removeAll(1)
   list2.printList()
   five.next = second
-  println(list2.detectFor(list2.head))
+  //println(list2.detectFor(list2.head))
   println()
   println()
   //list2.printList()
@@ -513,5 +748,24 @@ object List extends App {
   list4.printList()
   list4.reverseLinkedList_2(list4.head)
   list4.printList()
+
+
+  private val list5 = new SLinkedList[Int]
+  private val p = Node(0)
+  private val q = Node(2)
+  private val r = Node(1)
+  private val s = Node(0)
+  private val t = Node(2)
+  list5.head = p
+  p.next = q
+  q.next = r
+  r.next = s
+  s.next = t
+  list5.printList()
+  println(list5.sortList(list5.head))
+  println(list5.sortZeroOneTwo(list5.head))
+  println(list5.rearrangeEvenOdd(list5.head))
+  println(list5.addOneNumber(list5.head,7))
+
 }
 
