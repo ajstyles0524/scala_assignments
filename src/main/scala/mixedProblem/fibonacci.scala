@@ -34,8 +34,8 @@ object fibonacci {
   }
 
   private def fibUsingRec(num: Int): Int = {
-    if(num == 0) return 0
-    if(num == 1) return 1
+    if(num == 0) 0
+    if(num == 1) 1
     else fibUsingRec(num-1) + fibUsingRec(num-2)
 
   }
