@@ -10,11 +10,9 @@ object BinarySearch {
       if(low > high) "Element is not Present"
       else {
         val middle = low + (high - low) / 2
-        list match {
-          case list if list(middle) == target => middle
-          case list if list(middle) < target => binarySearchHelper(list, target, middle + 1, high)
-          case list if list(middle) > target => binarySearchHelper(list, target, low, middle - 1)
-        }
+        if(list(middle) < target) binarySearchHelper(list, target, middle+1, high)
+        else if(list(middle) > target) binarySearchHelper(list, target, low, middle-1)
+        else middle
       }
     }
     binarySearchHelper(list,target,low=0, high = list.length-1)
@@ -23,7 +21,7 @@ object BinarySearch {
 
   def main(args: Array[String]): Unit = {
     val list = List(1,2,3,5,6,8,10)
-    val value = 100
+    val value = 6
     println(binarySearch(list,value))
   }
 }

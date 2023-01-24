@@ -13,6 +13,7 @@ object InsertionSort {
   // 5   11  12   6 13
   // 5   11  6   12 13
   // 5    6  11  12 13
+
   private def insertionSort(array: Array[Int]): Unit= {
     if(array.isEmpty) println("Empty array found ")
     for (i <- 1 until array.length) {
@@ -59,17 +60,6 @@ object InsertionSort {
   }
 
 
-  private def insertionSortUsingRec(array: Array[Int]): Array[Int] = {
-    def insert(x: Int, xs: List[Int]): List[Int] = xs match {
-      case Nil => x :: Nil
-      case y :: ys => if (x <= y) x :: xs else y :: insert(x, ys)
-    }
-    def sort(xs: List[Int]): List[Int] = xs match {
-      case Nil => Nil
-      case y :: ys => insert(y, sort(ys))
-    }
-    sort(array.toList).toArray
-  }
 
   def main(args: Array[String]): Unit = {
     val array = Array(5, 2, 4, 6, 1, 3)
@@ -79,8 +69,5 @@ object InsertionSort {
     val sortedList = insertionSortForList(list)
     println(sortedList.mkString(", "))
 
-    val arr = Array(5, 2, 4, 6, 1, 3)
-    val sortedArray = insertionSortUsingRec(arr)
-    println(sortedArray.mkString(", "))
   }
 }
