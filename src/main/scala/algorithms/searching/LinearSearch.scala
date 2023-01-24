@@ -4,6 +4,8 @@ import scala.annotation.tailrec
 object LinearSearch {
   @tailrec
   private def linearSearch(list: List[Int], target: Int, index: Int = 0): Any ={
+    // val result = numbers.find(x => x == 3)
+    // val result = numbers.exists(x => x == 3)
     if(list.isEmpty) "Empty list found"
     else if(index >= list.length) "Element is not Present"
     else if(list(index) == target) index
@@ -17,6 +19,8 @@ object LinearSearch {
     else if (arr(index) == target) index
     else linearSearchForArray(arr, target, index + 1)
   }
+
+
 
   def main(args: Array[String]): Unit = {
     val list = List(1,2,3,4,5)

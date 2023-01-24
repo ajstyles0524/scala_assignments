@@ -90,14 +90,9 @@ object BinaryTree{
       root.left = deleteNode(root.left, key)
     else if (key > root.data)
       root.right = deleteNode(root.right, key)
-    // if key is same as root's key, then this is the node to be deleted
     else {
-      // node with only one child or no child
-      if (root.left == null)
-        return root.right
-      else if (root.right == null)
-        return root.left
-      // node with two children: Get the inorder successor (smallest) in the right subtree)
+      if (root.left == null) return root.right
+      else if (root.right == null) return root.left
       var minNode = root.right
       while (minNode.left != null) minNode = minNode.left
       root.data = minNode.data
@@ -435,6 +430,17 @@ object BinaryTree{
   }
   def checkBST(node: Node): Boolean = {
     isBST(node, Int.MinValue, Int.MaxValue)
+  }
+
+  var prev: Node = null
+  def isValidBST(root: Node): Boolean = {
+    if (root != null) {
+      if (!isValidBST(root.left)) false
+      if (prev != null && root.data <= prev.data) false
+      prev = root
+      isValidBST(root.right)
+    }
+    true
   }
 
 // 1 2 4 5
