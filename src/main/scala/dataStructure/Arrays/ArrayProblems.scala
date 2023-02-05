@@ -58,8 +58,7 @@ object ArrayProblems extends App{
   }
 
   def removeDuplicates(arr: Array[Int]): Array[Int] =
-    arr.foldLeft(Array[Int]())((acc, x) => if(!acc.contains(x)) acc :+ x else acc)
-
+    arr.foldLeft(Array[Int]())((acc, x) => if(acc.indexOf(x) == -1) acc :+ x else acc)
 
 
   private def printDuplicates(arr: Array[Int]): List[Int] ={
@@ -93,7 +92,7 @@ object ArrayProblems extends App{
   }
 
   private def rearrangeEvenOddHOF(arr: Array[Int]): Unit ={
-    val (evens, odds) = arr.partition(_ % 2 == 0)
+    val (evens, odds) = arr.partition(_ %2 == 0)
     val result = evens ++ odds
     println(result.mkString(","))
   }
@@ -154,8 +153,8 @@ object ArrayProblems extends App{
     arr.foldLeft((Int.MinValue, Int.MinValue)) {case((max1, max2), num) => if (num > max1) (num, max1) else if (num > max2) (max1, num) else (max1, max2)}._2
   }
 
-  private def maxAndMin(arr:Array[Int]): (Int,Int)={
-    arr.foldLeft((Int.MaxValue,Int.MinValue)){ case((min1,max1),num) => if(num < min1) (num,max1) else if(num > max1) (min1,num) else (min1,max1)}
+  private def maxAndMin(arr:Array[Int]): (Int,Int)= {
+    arr.foldLeft((Int.MaxValue, Int.MinValue))((acc, num) => if (num < acc._1) (num, acc._2) else if (num > acc._2) (acc._1, num) else (acc._1, acc._2))
   }
   def smallestAndSecondSmallest(arr: Array[Int]): (Int, Int) = {
     arr.distinct.toList.foldLeft((Int.MaxValue, Int.MaxValue)) {
@@ -168,31 +167,12 @@ object ArrayProblems extends App{
 
 
   // ***** important apply this concept on any type of segregation like even/odd...
-  def segregate(arr: Array[Int]): Array[Int] = {arr.foldLeft(Array[Int]()) {
-      case (segregated, num) =>
-        if (num == 0) num +: segregated
-        else segregated :+ num
-    }
+  def segregate(arr: Array[Int]): Array[Int] = {
+    arr.foldLeft(Array[Int]()) ((segregated, num) => if (num == 0) num +: segregated else segregated :+ num)
   }
 
   val numbers = Array(10, 20, 50, 40, 30)
   println(s"The second largest number is: ${secondLargest(numbers)}")
-
-
-  // Write a Scala program to rearrange a given array of unique elements such that every second element of the array is greater than its left and right elements.
-  def rearrangeArrayElement(nums: Array[Int]): Array[Int] = {
-    (1 until nums.length by 2).foldLeft(nums) { (acc, i) =>
-      val maxValue = acc.slice(i - 1, i + 2).max
-      val maxIndex = acc.indexOf(maxValue)
-      if (maxIndex == i || maxIndex == i - 1) acc
-      else {
-        val temp = acc(i)
-        acc(i) = acc(maxIndex)
-        acc(maxIndex) = temp
-        acc
-      }
-    }
-  }
 
 
   def areArraysEqual(arr1: Array[Int], arr2: Array[Int]): Boolean = {
@@ -287,7 +267,7 @@ object ArrayProblems extends App{
   }
 
   private def union(arr1: Array[Int], arr2: Array[Int]): Unit = {
-    val union = (arr1 ++ arr2).foldLeft(List[Int]())((acc, x) =>  if (!acc.contains(x))  x :: acc else acc ).reverse.toArray
+    val union = (arr1 ++ arr2).foldLeft(List[Int]())((acc, x) =>  if (acc.indexOf(x) == -1)  x :: acc else acc ).reverse.toArray
     println(union.mkString(" "))
   }
 
@@ -353,12 +333,7 @@ object ArrayProblems extends App{
   }
 
   def intersectionHOF(arr1: Array[Int], arr2: Array[Int]): Unit = {
-    val array1 = arr1
-    val array2 = arr2
-    val intersection = array1.foldLeft(List[Int]()) {
-      case (acc, x) if array2.contains(x) => x :: acc
-      case (acc, _) => acc
-    }.toArray
+    arr1.foldLeft(List[Int]())((acc, x) => if (arr2.indexOf(x) != -1)  x :: acc  else acc).toArray
   }
 
   def findMissingNumber(nums: Array[Int]): Int = {
@@ -446,8 +421,7 @@ object ArrayProblems extends App{
 
 
   def findFrequency(A: Array[Int]): Unit = {
-    //val frequency = arr.groupBy(identity).mapValues(_.size)
-    //val frec = A.foldLeft(Map[Int, Int]())((map, x) => map + (x -> (map.getOrElse(x, 0) + 1)))
+    val freq = A.foldLeft(Map[Int, Int]())((map, x) => map + (x -> (map.getOrElse(x, 0) + 1)))
     val arr = Array(1, 2, 3, 2, 1, 3, 4, 5)
     val frequency = scala.collection.mutable.Map[Int, Int]()
     for (i <- arr.indices) {
@@ -481,8 +455,7 @@ object ArrayProblems extends App{
   }
 
   def closestToZero(arr: Array[Int]): (Int, Int) = {
-    val sorted = arr.sorted
-    sorted.combinations(2)
+    arr.sorted.combinations(2)
       .map { case Array(a, b) => (a, b) }
       .minBy { case (a, b) => math.abs(a + b) }
   }
@@ -499,9 +472,9 @@ object ArrayProblems extends App{
     }
     throw new IllegalArgumentException("No two sum solution")
   }
-
   val raw = Array(1,2,3,4,5)
   println(twoSum(raw,7).mkString(" "))
+
 
   def findCombinations(arr: Array[Int], target: Int): List[(Int, Int)] = {
     arr.combinations(2)
@@ -630,7 +603,7 @@ object ArrayProblems extends App{
 
 
   private def firstRepeating(arr: Array[Int]): Int = {
-    arr.foldLeft(Array.empty[Int]) { (seen, element) => if (seen.contains(element)) return element else seen :+ element}
+    arr.foldLeft(Array.empty[Int])((seen, element) => if (seen.contains(element)) return element else seen :+ element)
     -1
   }
   private val war = Array(1,2,3,5,2)
@@ -648,45 +621,40 @@ object ArrayProblems extends App{
     }
     res
   }
-  private def maxProductArray(nums: Array[Int]): Int = {
-    var maxProduct = nums(0)
-    var currMax = nums(0)
-    var currMin = nums(0)
-    for (i <- 1 until nums.length) {
-      if (nums(i) < 0) {
-        val temp = currMax
-        currMax = currMin
-        currMin = temp
+
+  def nextGreatest(arr: Array[Int]): Array[Int] = {
+    arr.zipWithIndex.map { case (elem, idx) =>
+      arr.drop(idx + 1).find(_ > elem).getOrElse(-1)
+    } :+ -1
+  }
+
+  // Write a Scala program to rearrange a given array of unique elements such that every second element of the array is greater than its left and right elements.
+  def rearrangeArrayElement(nums: Array[Int]): Array[Int] = {
+    (1 until nums.length by 2).foldLeft(nums) { (acc, i) =>
+      val maxValue = acc.slice(i - 1, i + 2).max
+      val maxIndex = acc.indexOf(maxValue)
+      if (maxIndex == i || maxIndex == i - 1) acc
+      else {
+        val temp = acc(i)
+        acc(i) = acc(maxIndex)
+        acc(maxIndex) = temp
+        acc
       }
-      currMax = math.max(nums(i), currMax * nums(i))
-      currMin = math.min(nums(i), currMin * nums(i))
-      maxProduct = math.max(maxProduct, currMax)
     }
-     maxProduct
   }
 
   def maxProducts(nums: Array[Int]): Int = {
-    nums.foldLeft((nums(0), nums(0), nums(0))) {
-      case ((maxProduct, curMax, curMin), num) =>
+    nums.tail.foldLeft((nums(0), nums(0), nums(0))) {
+      case ((curMin,curMax,maxProduct), num) =>
         val newMax = if (num < 0) curMin * num else curMax * num
         val newMin = if (num < 0) curMax * num else curMin * num
-        (Math.max(maxProduct, newMax), Math.max(newMax, num), Math.min(newMin, num))
-    }._1
-  }
-
-
-  def maxSubArray(nums: Array[Int]): Int = {
-    var maxSum = nums(0)
-    var currSum = nums(0)
-    for (i <- 1 until nums.length) {
-      currSum = math.max(nums(i), currSum + nums(i))
-      maxSum = math.max(maxSum, currSum)
-    }
-    maxSum
+        (Math.min(newMin, num), Math.max(newMax,num), Math.max(maxProduct,newMax))
+    }._3
   }
 
   def maxSubArraySum(nums: Array[Int]): Int = {
-    nums.tail.foldLeft((nums.head, nums.head)) { (acc, n) =>
+    nums.tail.foldLeft((nums(0), nums(0))) {
+      case (acc, n) =>
       val currSum = math.max(n, acc._1 + n)
       val maxSum = math.max(acc._2, currSum)
       (currSum, maxSum)
@@ -714,7 +682,7 @@ object ArrayProblems extends App{
   }
 
   def firstNonRepeating(arr: Array[Int]): Unit ={
-    // val firstNonRepeating = arr.groupBy(identity).filter(_._2.length == 1).map(_._1).head
+    // val firstNonRepeating = arr.groupBy(identity).filter(_._2.length == 1).keys.head
     val counts = new scala.collection.mutable.HashMap[Int, Int]()
     for (i <- arr.indices) {
       if (counts.contains(arr(i))) {

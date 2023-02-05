@@ -89,9 +89,9 @@ object W3SchoolQues extends App{
   }
 
 
+    // a b c d e
   // Write a Scala program to read a string and returns after remove a specified character and its immediate left and right characters.
   private def removeCharAndAdjacent(s: String, c: Char): String = {
-
     val i = s.indexOf(c)
     if (i < 0) s
     else s.take(i - 1) + s.drop(i + 2)
@@ -112,6 +112,8 @@ object W3SchoolQues extends App{
     else s.slice(0, i).contains(sub)
   }
 
+
+  // a b c d e
 
   // Write a Scala program to check whether a given substring presents in the middle of another given string.
   // Here middle means difference between the number of characters to the left and right of the given substring not more than 1.
@@ -150,11 +152,14 @@ object W3SchoolQues extends App{
 
 
   // Write a Scala program to add a string with specific number of times separated by a substring.
-  private def repeatString(s: String, n: Int, separator: String): String = {
-    if (n <= 0) ""
-    else if (n == 1) s
-    else s + separator + repeatString(s, n - 1, separator)
+  def repeatStringSep(s: String, sep: String,n: Int): String = {
+    def Helper(s: String, sep: String, n: Int, acc: String): String ={
+      if(n==0) acc
+      else Helper(s, sep, n-1, acc + s + sep)
+    }
+    Helper(s,sep,n," ")
   }
+
 
   // Write a Scala program to repeat a specific number of characters for specific number of times from the last part of a given string.
   def repeatLastChars(s: String, n: Int, m: Int): String = {
@@ -310,13 +315,11 @@ object W3SchoolQues extends App{
 
   // Write a Scala program to calculate the sum of the numbers appear in a given string.
   private def sumOfNumbers(input: String): Int = {
+    // str.filter(c => c.isDigit).map(_.asDigit).sum
     // The input.split("\\D+") expression splits the input string into an array of words using one or more non-digit characters as the delimiter.
     input.split("\\D+").flatMap { word =>
-        try {
-          Some(word.toInt)
-        } catch {
-          case _: NumberFormatException => None
-        }
+        try Some(word.toInt)
+        catch {case _: NumberFormatException => None}
       }.sum
   }
   val s1 = "it 15 is25 a 20string"
@@ -351,7 +354,7 @@ object W3SchoolQues extends App{
   println(s"Is $character1 happy in $string1: ${isHappy(string1, character1)}")
 
   val input = "hello"
-  println(repeatString(input, 3, "best")) // Output: "hello,hello,hello"
+  //println(repeatString(input, 3, "best")) // Output: "hello,hello,hello"
 
   val s = "Ananda Kumar CTO"
   println(removeDuplicates(s))

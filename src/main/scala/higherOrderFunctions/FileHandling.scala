@@ -27,7 +27,7 @@ object FileHandling extends App{
 
   //private val validName = data.filter( ele => ele(2).take(2).toInt > 40).filter(ele => ele(3) == "Engineering" || "Human Resource")
 
-  private val filteredData = data.filter { case (_ :: _ :: salary :: department :: _) =>
+  private val filteredData = data.filter { case _ :: _ :: salary :: department :: _ =>
     salary.take(2).toInt > 40 && (department == "Engineering" || department == "Human Resource")
   }
   filteredData.foreach { case (name :: city :: _ :: _ :: _) =>

@@ -4,11 +4,20 @@ object HOF extends App{
 
   // map, flatMap, reduce, filter, groupBy, partitionBy, fold foldLeft,foldRight
 
-
   // definition of HOF(passing function)
-  private def functionExample(a: Int, f: Int => Int): Unit = println(f(a))
-  private def multiplyBy2(i: Int) = i*2
-  functionExample(25,multiplyBy2)
+  private def functionExample(a: Int,b: Int ,f:(Int,Int) => Int): Unit = println(f(a,b))
+  private def addition(num1: Int, num2: Int): Int = num1 + num2
+  functionExample(25,25,addition)
+
+
+
+  // Higher-Order Function in Scala that returns a function as output:
+  private def adder(x: Int): Int => Int = {
+    (y: Int) => x + y
+  }
+  private val add5 = adder(5)
+  private val re = add5(3)
+  println(re) // Output: 8
 
 
   // map - map is a function that transforms one collection into another collection by applying a function to each element.
@@ -33,7 +42,7 @@ object HOF extends App{
   private val res4 = list.flatMap(y => f(y))
 
   private val seq = Seq(8, 15, 22, 23, 24)
-  private val res6 = seq.flatMap { s => Seq(s, s - 1)}
+  private val res6 = seq.flatMap(s => Seq(s, s - 1))
   private val res5 = seq flatMap { s =>if (s % 3 == 0) Seq(s) else Seq(-s)}
   println(r)
   println(res4)
@@ -43,8 +52,8 @@ object HOF extends App{
 
   // filter - filter function takes a predicate and selects the elements from the data structure which satisfy the given predicate
   private val names = List("Anand", "Ram", "Shyam", "Kanta")
-  private val res7 = names.filter(name => name.length >4)
-  private val res8  = list.filter(x=>{x % 3 == 0})
+  private val res7 = names.filter(_.length >4)
+  private val res8  = list.filter(_% 3 == 0)
   private val res9 = list.filter(_ < 3)
   println(res7)
   println(res8)

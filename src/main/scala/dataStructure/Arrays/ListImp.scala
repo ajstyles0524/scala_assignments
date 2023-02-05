@@ -19,17 +19,18 @@ object ListImp extends App{
   private def maxAndMin(arr:Array[Int]): Unit ={
     val max = arr.reduce((a,b) => if(a>b) a else b)
     val min = arr.reduce((a,b) => if(a<b) a else b)
-    val (firstMax, secondMax) = arr.foldLeft((Int.MinValue, Int.MinValue)){ (max, x) =>
-      if (x > max._1) (x, max._1) else if (x > max._2) (max._1, x) else max}
+    val (firstMax, secondMax) = arr.foldLeft((Int.MinValue, Int.MinValue)){ (max, x) =>if (x > max._1) (x, max._1) else if (x > max._2) (max._1, x) else max}
     println(max)
     println(min)
     println(s"First max: $firstMax, Second max: $secondMax")
   }
+
   @tailrec
   def reverse(list: List[Int], acc: List[Int]): List[Int] ={
     if(list == Nil) acc
     else reverse(list.tail, list.head :: acc)
   }
+
   private def reverseHOF(list: List[Int]): List[Int]={
     list.foldLeft(List[Int]())((acc,i) => if(acc.length == list.length) acc else i :: acc)
   }
@@ -129,6 +130,7 @@ object ListImp extends App{
     }
   }
 
+
   private def concatenate(map1: Map[String, Int], map2: Map[String, Int]): Map[String, Int] = {
     map2.foldLeft(map1)((acc,i) => acc + (i._1 -> (i._2 + acc.getOrElse(i._1,0))))
   }
@@ -146,47 +148,6 @@ object ListImp extends App{
     }
   }
 
-
-  case class Salary(basic:Double, hra:Double,ta:Double)
-  case class Employee(id:Int, email:String, salary:Salary, age:Int)
-  // a) Increase 10 % basic
-  // b) Increase 20% hra if age greater than 50
-  def appraisal(emps: List[Employee]): List[Employee] = {
-    emps.map { emp =>
-        val newSalary = if (emp.age > 50) emp.salary.copy(basic = emp.salary.basic * 1.1, hra = emp.salary.hra * 1.2)
-                        else emp.salary.copy(basic = emp.salary.basic * 1.1)
-        emp.copy(salary = newSalary)
-    }
-  }
-
-  // Spilt student list into four list as CS,IT,EC,ME. Student represented by :
-  case class Student(id:Int, name:String, age:Int, branch:String)
-  def spiltByBranch(list: List[Student]): (List[Student], List[Student], List[Student], List[Student]) = {
-    val (cs, rest) = list.partition(_.branch == "CS")
-    val (it, rest2) = rest.partition(_.branch == "IT")
-    val (ec, me) = rest2.partition(_.branch == "EC")
-    (cs, it, ec, me)
-  }
-
-  def spiltByBranches(list: List[Student]): (List[Student], List[Student], List[Student], List[Student]) = {
-    val grouped = list.groupBy(_.branch)
-    (grouped.getOrElse("CS", List()), grouped.getOrElse("IT", List()), grouped.getOrElse("EC", List()), grouped.getOrElse("ME", List()))
-  }
-
-  case class Customer(value: Int)
-  case class Consultant(portfolio: List[Customer])
-  case class Branch(consultants: List[Consultant])
-  case class Company(branches: List[Branch])
-  def getCompanyValue(company: Company): Int = {
-    val valuesList: List[Int] = for {
-      branch <- company.branches
-      consultant <- branch.consultants
-      customer <- consultant.portfolio
-    } yield customer.value
-    valuesList.sum
-  }
-
-
   private def counter(str: String): List[(String,Int)] ={
      val wordCounts = str.split(" ").groupBy(x => x).map(x => (x._1,x._2.length)).toList  //.sortBy(-_._2)
      wordCounts.sortWith {
@@ -203,27 +164,7 @@ object ListImp extends App{
   }
 
 
-
-  sealed trait Expr
-  case class Number(i: Int) extends Expr
-  case class Sum(expr1: Expr, expr2: Expr) extends Expr
-  case class Subtract(expr1: Expr, expr2: Expr) extends Expr
-  case class Multiply(expr1: Expr, expr2: Expr) extends Expr
-  def eval(expr: Expr): Int = expr match {
-    case Number(i) => i
-    case Sum(e1, e2) => eval(e1) + eval(e2)
-    case Subtract(e1, e2) => eval(e1) - eval(e2)
-    case Multiply(e1, e2) => eval(e1) * eval(e2)
-  }
-
-  val expr = Subtract(Number(2), Number(5))
-  val result = eval(expr)
-  println(result) //7
-
-
-
   // implement map and flatmap using foldLeft
-
   private class MyList(list: List[Int]) {
     def map(f: Int => Int): List[Int] = {
       list.foldLeft(List[Int]())((acc,i) => f(i) :: acc).reverse
@@ -267,6 +208,7 @@ object ListImp extends App{
   def reduce2(list: List[Map[String, Int]]): Map[String, Int] = {
     list.foldLeft(Map[String, Int]())((acc, ele) => acc ++ ele.map { case (k, v) => k -> (v + acc.getOrElse(k, 0)) })
   }
+
   private def reduce3(list: List[Map[String, Map[String, Int]]]): Map[String, Map[String, Int]] = {
     list.foldLeft(Map.empty[String, Map[String, Int]]) { (acc, m) =>
       m.foldLeft(acc) { (innerAcc, innerM) =>
@@ -300,24 +242,6 @@ object ListImp extends App{
     println(str.groupBy(identity).toList.sortBy(_._2.length)(Ordering.Int.reverse).map(_._2).mkString)
   }
 
-  // Sort names by age; output should show name and age in scala
-  private case class Person(name: String, age: Int)
-  private val people = List(Person("John", 25), Person("Jane", 32), Person("Bob", 20))
-  private val sortedPeople = people.sortWith(_.age > _.age)  // sortBy(_.age)
-  sortedPeople.foreach(p => println(p.name + ": " + p.age))
-
-  def primesInRange(start: Int, end: Int): List[Int] = {
-    val numbers = start to end
-    numbers.filter(n => isPrime(n)).toList
-  }
-  private def isPrime(n: Int): Boolean = {
-    if (n <= 1) return false
-    if (n == 2) return true
-    for (i <- 2 until Math.sqrt(n).toInt + 1) {
-      if (n % i == 0) return false
-    }
-    true
-  }
   private def checkPrime(num: Int): Boolean = {
     @tailrec
     def checkPrimeHelper(num: Int, i: Int = 2): Boolean = {
@@ -339,18 +263,6 @@ object ListImp extends App{
     numbers.filter(n => (2 until n).forall(x => n % x != 0)).toList
   }
   println(primesInRangeHOF(1, 100))
-
-
-
-
-  // Sort shopping list by price; lowest on top
-  case class Item(name: String, price: Double)
-  private def sortShoppingListByPrice(shoppingList: List[Item]): List[Item] = {
-    shoppingList.sortBy(item => item.price)
-  }
-  private val shoppingList = List(Item("apple", 0.5), Item("orange", 0.3), Item("banana", 0.4))
-  val sortedList = sortShoppingListByPrice(shoppingList)
-  println(sortedList)
 
 
   private def generateSequence: Seq[String] = {
@@ -377,36 +289,6 @@ object ListImp extends App{
     numbers.forall(x => x % 2 == 0)
   }
 
-
-  case class Employee2(name: String, age: Int, salary: Int)
-  private val employees = List(
-    Employee2("John Doe", 30, 500),
-    Employee2("Jane Smith", 35, 60000),
-    Employee2("Bob Johnson", 25, 45000),
-    Employee2("Emily Davis", 28, 55000)
-  )
-  val employeeNames = employees.map(_.name)
-  val employeesOlderThan30 = employees.filter(_.age > 30)
-  val totalSalary = employees.foldLeft(0.0)(_ + _.salary)
-  employees.foreach(e => e.name + "-" + e.salary )
-
-
-  case class Employee3(name: String, age: Int, salary: Double, leaves: List[String])
-  private val employee = List(
-    Employee3("John Doe", 30, 50000.0, List("Sick Leave", "Vacation Leave")),
-    Employee3("Jane Smith", 35, 60000.0, List("Sick Leave")),
-    Employee3("Bob Johnson", 25, 45000.0, List("Vacation Leave")),
-    Employee3("Emily Davis", 28, 55000.0, List())
-  )
-  val employeesOnSickLeave = employee.filter(employee => employee.leaves.contains("Sick Leave"))
-  val totalLeaves = employee.map(_.leaves.size).sum
-  for (employee <- employee) {
-    println(s"Employee Name: ${employee.name}")
-    println(s"Employee Leave Records: ${employee.leaves}")
-  }
-  private val firstEmployee = employee.head
-  val updatedEmployee = firstEmployee.copy(leaves = firstEmployee.leaves :+ "Maternity Leave")
-
   def countChar(str: String): Int =
   str.groupBy(identity).mapValues(_.size)('a')
 
@@ -414,21 +296,6 @@ object ListImp extends App{
   val cost = (1 to 8).reduce((acc, _) => acc + 8)
   val costs = (1 to 8).map(_ => 8).sum
 
-
-  // Categorise data per Birthdate
-  val data = List(
-    ("John Smith", "1990-01-01"),
-    ("Jane Doe", "1985-05-15"),
-    ("Bob Johnson", "1980-03-20"),
-    ("Samantha James", "1995-07-01"))
-
-  private val birthYearData = data.groupBy(d => d._2.split("-")(0))
-  birthYearData.foreach { case (year, people) =>
-    println(s"People born in $year:")
-    people.foreach { case (name, _) =>
-      println(s"  $name")
-    }
-  }
 
   // Two data lists given; select common items
   private def commonList(list1: List[Int], list2: List[Int]): List[Int] ={

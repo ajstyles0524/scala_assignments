@@ -14,7 +14,6 @@ object String extends App{
   }
 
 
-
   def reverse(str: String): String = {
     var reversed = ""
     for (i <- 0 until str.length) {
@@ -94,6 +93,7 @@ object String extends App{
 
   def checkPalindrome(s: String): Boolean = {
     s.zip(s.reverse).forall(c => c._1 == c._2)
+    //s.indices.forall(i => s(i) == s(s.length-i-1))
   }
 
 
@@ -129,16 +129,14 @@ object String extends App{
     output
   }
 
-  private def removeAdjacent(s: String): String = {
-    s.foldRight("")((c,acc) => if (acc.headOption.contains(c)) acc else c + acc)
+  def removeDuplicates(s: String): String = {
+    s.foldLeft(List[Char]()) ((acc, x) =>  if (acc.nonEmpty && acc.head == x)  acc.tail else x :: acc).reverse.mkString
   }
 
 
 
   private def countVowels(s: String): Int = {
-    val vowels = Set('a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U')
-    s.count(c => vowels.contains(c))
-    s.foldLeft(0)((acc,i) => if(vowels.contains(i)) acc+1 else acc )
+    s.foldLeft(0)((acc,i) => if("aeiouAIEOU".indexOf(i) != -1) acc+1 else acc )
   }
 
   private def findSubstring(s: String, sub: String): Int = {
@@ -175,8 +173,9 @@ object String extends App{
   }
 
   private def countDuplicates(str: String): Unit = {
-    val duplicates = str.groupBy(identity).filter(_._2.length > 1)
-    duplicates.foreach(x => println(s"${x._1} : ${x._2.length}"))
+    //val duplicates = str.groupBy(identity).filter(_._2.length > 1)
+    //duplicates.foreach(x => println(s"${x._1} : ${x._2.length}"))
+    val duplicates = str.groupBy(identity).map(ele => (ele._1,ele._2.length)).filter(_._2 > 1).foreach(println)
   }
 
   def maxOccurring(str1: String): Char = {
@@ -199,13 +198,9 @@ object String extends App{
   // equals or equalsIgnoreCase
   // my name is Anand Kumar
   private def solution(str: String): String ={
-    str.split(" ").foldLeft(List[String]())((acc,i) =>
-      if(i.length <= 4) acc :+ i
-      else {
-        val s = i.take(i.length-4) + i.takeRight(4).toUpperCase
-        acc :+ s
-      }
-    ).toString
+    str.split(" ").foldLeft("")((acc,i) =>
+      if(i.length <= 4) acc + i
+      else acc + i.take(i.length-4) + i.takeRight(4).toUpperCase)
   }
 
   val s = "My name is Debdeep Goswami"
@@ -239,11 +234,7 @@ object String extends App{
   }
 
   private def sortByFrequency(s: String): String = {
-    val charCount = s.groupBy(identity).mapValues(_.length)
-    s.sortWith((a, b) =>
-      if (charCount(a) == charCount(b)) a < b
-      else charCount(a) > charCount(b)
-    )
+    s.groupBy(identity).toList.sortBy(-_._2.length).map(_._2).mkString
   }
 
   private def vowelAndCons(str: String): Unit ={
@@ -258,9 +249,14 @@ object String extends App{
     println("Number of '" + char + "' in '" + str + "': " + count)
   }
 
+  // working....
   private def firstNonRepeating(str: String): Unit ={
-    val firstNonRepeated = str.groupBy(identity).find(elem => elem._2.size == 1).map(_._1)
+    val firstNonRepeated =  str.foldLeft("")((acc,i)=> if(str.indexOf(i) == str.lastIndexOf(i))  acc+i else acc )
     println("First non-repeated character: " + firstNonRepeated)
+    val charCount = s.groupBy(c => c).map(x => (x._1, x._2.length))
+    println(charCount)
+    val p = s.find(c => charCount(c) == 1)
+    println(p)
   }
 
   def removeChar(str: String): Unit ={
