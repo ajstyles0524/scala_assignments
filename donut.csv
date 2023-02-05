@@ -1,0 +1,2 @@
+Id, type , name , ppu , batters,  topping
+0001,Cake,donut,0.55,Batters(List(Batter(1001,Regular), Batter(1002,Chocolate), Batter(1003,Blueberry), Batter(1004,Devil's Food))),List(Topping(5001,None), Topping(5002,Glazed), Topping(5005,Sugar), Topping(5007,Powdered Sugar), Topping(5006,Chocolate with Sprinkles), Topping(5003,Chocolate), Topping(5004,Maple))

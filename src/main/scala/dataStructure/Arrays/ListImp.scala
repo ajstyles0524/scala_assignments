@@ -34,6 +34,12 @@ object ListImp extends App{
     list.foldLeft(List[Int]())((acc,i) => if(acc.length == list.length) acc else i :: acc)
   }
 
+  private def flat_List(ls: List[_]): List[Any] = ls match {
+    case Nil => Nil
+    case (head: List[_]) :: tail => flat_List(head) ::: flat_List(tail)
+    case head :: tail => head :: flat_List(tail)
+  }
+
   def rotate(arr: Array[Int], r: Int): Array[Int] ={
     arr.drop(arr.length - r) ++ arr.take(arr.length - r)
   }

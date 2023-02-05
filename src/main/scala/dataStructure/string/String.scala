@@ -2,6 +2,7 @@ package dataStructure.string
 
 object String extends App{
 
+  // https://www.w3resource.com/scala-exercises/string/scala-string-exercise-24.php
   def length(str: String): Int ={
     var l = 0
     for (c <- str) l+= 1
@@ -35,6 +36,8 @@ object String extends App{
       print(temp)
     }
   }
+
+
 
 
   private def WordsInReverse(str1: String): String = {
@@ -192,6 +195,8 @@ object String extends App{
     }
     result
   }
+  // codePointAt == unicode
+  // equals or equalsIgnoreCase
   // my name is Anand Kumar
   private def solution(str: String): String ={
     str.split(" ").foldLeft(List[String]())((acc,i) =>
@@ -320,7 +325,5 @@ object String extends App{
 
   val str = "abcabcbb"
   //longestSubString(str)
-
-
 
 }
